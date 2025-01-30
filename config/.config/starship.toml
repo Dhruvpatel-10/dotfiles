@@ -1,0 +1,87 @@
+# ~/.config/starship.toml
+
+# General Settings
+add_newline = true
+scan_timeout = 30
+
+# Main Format - Two lines
+format = """
+$directory $git_branch $git_status
+$character"""
+
+# Right Format
+right_format = """
+$nodejs $rust $python $conda $cmd_duration
+"""
+
+# Username Display
+[username]
+style_user = "bold cyan"
+style_root = "bold red"
+format = "[$user at]($style) "
+disabled = false
+show_always = true
+
+
+# Directory Display
+[directory]
+style = "bold blue"
+read_only = " 󰌾"
+truncation_length = 3
+truncation_symbol = '../'
+truncate_to_repo = true
+format = "[$path]($style)[$read_only]($read_only_style) "
+
+[conda]
+format = " [on $symbol$environment](dimmed green)"
+symbol = '🅒 '
+
+# Git Branch Display
+[git_branch]
+symbol = " "
+style = "bold green"
+format = "[$symbol $branch]($style)"
+
+# Git Status Display
+[git_status]
+style = "bold red"
+format = '([$all_status$ahead_behind]($style))'
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇡${ahead_count}⇣${behind_count}"
+untracked = "?${count}"
+modified = "!${count}"
+staged = "+${count}"
+deleted = "✘${count}"
+
+[git_commit]
+tag_symbol = '  '
+
+[cmd_duration]
+min_time = 2000
+format = " [$duration]($style)"
+style = "bold yellow"
+
+# Prompt Character
+[character]
+success_symbol = "[>](bold green)"
+error_symbol = "[✗](bold red)"
+
+# Language Versions (minimal, shown only when in project directory)
+[nodejs]
+format = "[$symbol($version )]($style)"
+symbol = "󰎙 "
+style = "bold green"
+detect_files = ["package.json", ".node-version"]
+
+[python]
+format = "[$symbol($version)]($style)"
+symbol = "󰌠 "
+style = "bold yellow"
+detect_files = ["requirements.txt", "pyproject.toml", ".python-version"]
+
+[rust]
+format = "[$symbol($version )]($style)"
+symbol = "󱘗 "
+style = "bold red"
+detect_files = ["Cargo.toml", "rust-toolchain.toml"]
