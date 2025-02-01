@@ -62,7 +62,6 @@ bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 
 # Aliases
-alias ls='ls --color'
 alias c='clear'
 
 # Shell integrations
