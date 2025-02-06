@@ -1,1 +1,3 @@
 *.bak
+config/.config/mpv/watch-later
+config/.config/mpv/watch-later/*

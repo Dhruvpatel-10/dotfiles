@@ -38,9 +38,9 @@ symbol = '🅒 '
 
 # Git Branch Display
 [git_branch]
-symbol = " "
+symbol = " \ue725"
 style = "bold green"
-format = "[$symbol $branch]($style)"
+format = " [$symbol $branch]($style)"
 
 # Git Status Display
 [git_status]
