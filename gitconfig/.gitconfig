@@ -1,8 +1,9 @@
 [user]
 	name = Dhruv
 	email = dp397113@gmail.com
-	signingkey = id_ed25519.pub
+	signingkey = 08D647FE88C7EBE7
 [gpg]
 	format = ssh
+	program = /usr/bin/gpg
 [commit]
 	gpgsign = true
