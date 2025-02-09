@@ -5,6 +5,7 @@ sudo dnf install https://download1.rpmfusion.org/free/fedora/rpmfusion-free-rele
 sudo dnf install https://download1.rpmfusion.org/nonfree/fedora/rpmfusion-nonfree-release-$(rpm -E %fedora).noarch.rpm
 
 disable other repo
+sudo dnf5 config-manager setopt nextdns.enabled=0
 
 sudo dnf install mesa-va-drivers mesa-vdpau-drivers libva libva-utils vdpauinfo
 
