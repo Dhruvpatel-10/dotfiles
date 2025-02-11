@@ -18,53 +18,25 @@ if command -v starship &>/dev/null; then
     eval "$(starship init zsh)"
 fi
 
-# 4. Environment-Specific Initialization Functions
-# --------------------------------------------------
+# 4. Asynchronous Conda & Mamba Initialization Without Job Notifications
+# ------------------------------------------------------------------
+# Disable job notifications
+# Initialize conda directly
+if [ -f "/home/stark/miniforge3/etc/profile.d/conda.sh" ]; then
+    . "/home/stark/miniforge3/etc/profile.d/conda.sh"
+else
+    export PATH="/home/stark/miniforge3/bin:$PATH"
+fi
 
-# Conda initialization on demand.
-function load_conda() {
-    if [[ -z "$CONDA_INITIALIZED" ]]; then
-        export CONDA_INITIALIZED=1
-        __conda_setup="$('/home/stark/miniforge3/bin/conda' 'shell.zsh' 'hook' 2> /dev/null)"
-        if [ $? -eq 0 ]; then
-            eval "$__conda_setup"
-        else
-            if [ -f "/home/stark/miniforge3/etc/profile.d/conda.sh" ]; then
-                . "/home/stark/miniforge3/etc/profile.d/conda.sh"
-            else
-                export PATH="/home/stark/miniforge3/bin:$PATH"
-            fi
-        fi
-        unset __conda_setup
-    fi
-}
+# Initialize micromamba directly
+if [ -f "/home/stark/.local/bin/micromamba" ]; then
+    export MAMBA_EXE='/home/stark/.local/bin/micromamba'
+    export MAMBA_ROOT_PREFIX='/home/stark/micromamba'
+    eval "$("$MAMBA_EXE" shell hook --shell zsh --root-prefix "$MAMBA_ROOT_PREFIX" 2>/dev/null)"
+fi
 
-# Mamba initialization on demand.
-function load_mamba() {
-    if [[ -z "$MAMBA_INITIALIZED" ]]; then
-        export MAMBA_INITIALIZED=1
-        export MAMBA_EXE='/home/stark/.local/bin/micromamba'
-        export MAMBA_ROOT_PREFIX='/home/stark/micromamba'
-        __mamba_setup="$("$MAMBA_EXE" shell hook --shell zsh --root-prefix "$MAMBA_ROOT_PREFIX" 2> /dev/null)"
-        if [ $? -eq 0 ]; then
-            eval "$__mamba_setup"
-        else
-            alias micromamba="$MAMBA_EXE"
-        fi
-        unset __mamba_setup
-    fi
-}
-
-# Wrapper functions for automatic initialization.
-function conda() {
-    load_conda
-    command conda "$@"
-}
-
-function micromamba() {
-    load_mamba
-    command micromamba "$@"
-}
+# Only disable background job notifications, keep important system notifications
+setopt NO_NOTIFY
 
 # 5. History Settings
 HISTSIZE=5000
