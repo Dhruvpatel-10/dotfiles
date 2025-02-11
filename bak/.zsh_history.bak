@@ -1,0 +1,111 @@
+# Create the .config directory inside config package\
+mkdir -p ~/.dotfiles/config/.config\
+\
+# Move files to their correct locations\
+mv ~/.dotfiles/config/starship/starship.toml ~/.dotfiles/config/.config/starship.toml\
+mv ~/.dotfiles/config/mpv ~/.dotfiles/config/.config/ && rm -v -d ~/.dotfiles/config/starship
+mkdir -p ~/.dotfiles/config/.config\
+mv ~/.dotfiles/config/starship/starship.toml ~/.dotfiles/config/.config/starship.toml\
+mv ~/.dotfiles/config/mpv ~/.dotfiles/config/.config/ 
+stow -D -d .dotfiles -t ~ config
+stow -v -d .dotfiles -t ~ config
+ls -la ~/.config/mpv\
+ls -la ~/.config/starship.toml
+stow -v -d .dotfiles -t ~ gitconfig
+stow -v -d .dotfiles -t ~ conda
+ssh-keygen -t ed25519 -C "dp397113@gmail.com"
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/id_ed25519
+cat ~/.ssh/id_ed25519.pub | wl-copy
+cat ~/.ssh/id_ed25519.pub 
+ssh -T github.com
+ssh -T git@github.com
+git init .
+git push origin main
+git push -f origin main
+git -f push origin main
+git -v push origin main
+git init
+git add .
+git commit -m "New dotfiles added"
+git remote add origin git@github.com:Dhruvpatel-10/dotfiles.git
+touch .gitignore
+kwrite .gitignore
+git add .gitignore
+git commit -m "git ignore added"
+git push origin master
+snapper
+snapper list
+snapper -c home list
+git tag -a first-dotfile-0.0.1 -m "Added first .dotfiles with zsh config(mpv, starship), gitconfig, conda"
+cd .dotfiles
+git tag -a first-dotfile-0.0.1 -m "Added first .dotfiles with zsh config(mpv, starship), gitconfig, conda"  
+git push origin --tags
+git tag
+cd
+cd Code/Arlo-Ai
+sudo dnf install zoxide
+clear
+dnf copr enable atim/starship
+sudo dnf copr enable atim/starship
+dnf install starship
+sudo dnf install starship
+c
+exit
+: 1738410885:0;sudo dnf5 group list\
+
+: 1738410934:0;sudo dnf group install audio sound-and-video d-development
+: 1738412825:0;sudo dnf install dnf-plugins-core\
+\
+sudo dnf config-manager addrepo --from-repofile=https://brave-browser-rpm-release.s3.brave.com/brave-browser.repo\
+\
+sudo dnf install brave-browser
+: 1738413053:0;man dnf.conf
+: 1738413109:0;man dnf.conf | grep -i gpg
+: 1738413126:0;man dnf.conf
+: 1738413467:0;kwrite /etc/dnf/dnf.conf
+: 1738414237:0;cp /etc/dnf/dnf.conf ~/.dotfiles/dnf/dnf.conf
+: 1738414240:0;clear
+: 1738414246:0;cd dotfile
+: 1738414249:0;cd dotfiles
+: 1738414253:0;cd .dotfiles
+: 1738414255:0;clear
+: 1738414266:0;git add .
+: 1738414268:0;clear
+: 1738414282:0;git commit -m "dnf conf updated"
+: 1738414289:0;git push origin master
+: 1738414293:0;cd
+: 1738414294:0;c
+: 1738415272:0;sudo rpm --import https://packages.microsoft.com/keys/microsoft.asc\
+echo -e "[code]\nname=Visual Studio Code\nbaseurl=https://packages.microsoft.com/yumrepos/vscode\nenabled=1\ngpgcheck=1\ngpgkey=https://packages.microsoft.com/keys/microsoft.asc" | sudo tee /etc/yum.repos.d/vscode.repo > /dev/null\
+
+: 1738415285:0;dnf check-update\
+sudo dnf install code # or code-insiders\
+
+: 1738415321:0;sudo dnf install code
+: 1738415472:0;cd Downloads
+: 1738415474:0;tar -C $HOME -h -xzf NoiseTorch_x64_v0.12.2.tgz
+: 1738415476:0;clear
+: 1738415487:0;sudo setcap 'CAP_SYS_RESOURCE=+ep' ~/.local/bin/noisetorch
+: 1738415675:0;arecord -f cd -r 44100 -d 5 temp.wav && aplay temp.wav && rm temp.wav
+: 1738415776:0;c
+: 1738415798:0;sudo dnf group rm audio
+: 1738415807:0;sudo dnf group remove audio
+: 1738415908:0;sudo dnf check\
+
+: 1738415935:0;sudo dnf check-update\
+
+: 1738415941:0;sudo dnf repoquery --unneeded\
+
+: 1738415951:0;sudo dnf autoremove
+: 1738415966:0;dnf repoquery --unsatisfied
+: 1738416024:0;sudo dnf rm dragonplayer -y
+: 1738416037:0;sudo dnf5 install gstreamer1-plugins-{bad-free,good,ugly-free} gstreamer1-libav\
+
+: 1738416052:0;sudo dnf5 install alsa-utils
+: 1738416067:0;sudo dnf install mpv
+: 1738416700:0;sudo dnf install make build
+: 1738416740:0;sudo dnf install portaudio
+: 1738416745:0;clear
+: 1738416749:0;sudo dnf install conda
+: 1738416775:0;c
