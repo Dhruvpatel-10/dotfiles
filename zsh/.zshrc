@@ -18,25 +18,10 @@ if command -v starship &>/dev/null; then
     eval "$(starship init zsh)"
 fi
 
-# 4. Asynchronous Conda & Mamba Initialization Without Job Notifications
-# ------------------------------------------------------------------
-# Disable job notifications
-# Initialize conda directly
-if [ -f "/home/stark/miniforge3/etc/profile.d/conda.sh" ]; then
-    . "/home/stark/miniforge3/etc/profile.d/conda.sh"
-else
-    export PATH="/home/stark/miniforge3/bin:$PATH"
-fi
-
-# Initialize micromamba directly
-if [ -f "/home/stark/.local/bin/micromamba" ]; then
-    export MAMBA_EXE='/home/stark/.local/bin/micromamba'
-    export MAMBA_ROOT_PREFIX='/home/stark/micromamba'
-    eval "$("$MAMBA_EXE" shell hook --shell zsh --root-prefix "$MAMBA_ROOT_PREFIX" 2>/dev/null)"
-fi
-
-# Only disable background job notifications, keep important system notifications
-setopt NO_NOTIFY
+# Source pyenv
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
+eval "$(pyenv init --path)"
 
 # 5. History Settings
 HISTSIZE=5000
@@ -117,3 +102,6 @@ eval "$(zoxide init --cmd cd zsh)"
 # ====================================================
 # End of ~/.zshrc
 # ====================================================
+
+# Created by `pipx` on 2025-02-15 14:47:57
+export PATH="$PATH:/home/stark/.local/bin"
