@@ -7,10 +7,13 @@
 [[ $- != *i* ]] && return
 
 # 2. SSH Agent Setup
-export SSH_AUTH_SOCK=$(ls /run/user/$UID/keyring/ssh 2>/dev/null || echo "$HOME/.ssh-agent.sock")
-if ! ssh-add -l >/dev/null 2>&1; then
-    eval "$(ssh-agent -s)" >/dev/null 2>&1
-    ssh-add ~/.ssh/id_ed25519 >/dev/null 2>&1
+# SSH Agent Setup
+if [[ -z "$SSH_AUTH_SOCK" || ! -S "$SSH_AUTH_SOCK" ]]; then
+    export SSH_AUTH_SOCK="$HOME/.ssh-agent.sock"
+    if ! pgrep -u "$USER" ssh-agent > /dev/null; then
+        eval "$(ssh-agent -a $SSH_AUTH_SOCK)" >/dev/null
+        ssh-add ~/.ssh/id_ed25519 >/dev/null 2>&1
+    fi
 fi
 
 # 3. Starship Prompt Initialization
@@ -18,10 +21,15 @@ if command -v starship &>/dev/null; then
     eval "$(starship init zsh)"
 fi
 
-# Source pyenv
-export PYENV_ROOT="$HOME/.pyenv"
-export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init --path)"
+load_dev_env() {
+  export PYENV_ROOT="$HOME/.pyenv"
+  export PATH="$PYENV_ROOT/bin:$PATH"
+  eval "$(pyenv init --path)"
+
+  export NVM_DIR="$HOME/.nvm"
+  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+  [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
+}
 
 # 5. History Settings
 HISTSIZE=5000
@@ -38,40 +46,25 @@ if [[ ! -f "$HOME/.zinit/bin/zinit.zsh" ]]; then
 fi
 source "$HOME/.zinit/bin/zinit.zsh"
 ZINIT_HOME="$HOME/.zinit/plugins"
-
-# Load plugins with silent and asynchronous options.
+# Core plugins early
 zinit ice silent wait'0'
 zinit light zsh-users/zsh-autosuggestions
-
-zinit ice silent wait'0'
 zinit light zsh-users/zsh-syntax-highlighting
 
-zinit ice silent wait'0'
+# Other plugins after prompt shows
+zinit ice silent wait'1'
 zinit light zsh-users/zsh-completions
-
-zinit ice silent wait'0'
 zinit light Aloxaf/fzf-tab
 
-# Load helper snippets (e.g. completions for git, npm, etc.)
-zinit ice silent wait'0'
+# Snippets deferred
+zinit ice silent wait'2'
 zinit snippet OMZP::git
-
-zinit ice silent wait'0'
 zinit snippet OMZP::npm
-
-zinit ice silent wait'0'
+zinit snippet OMZP::nvm
 zinit snippet OMZP::python
-
-zinit ice silent wait'0'
 zinit snippet OMZP::docker
-
-zinit ice silent wait'0'
 zinit snippet OMZP::conda
-
-zinit ice silent wait'0'
 zinit snippet OMZP::sudo
-
-zinit ice silent wait'0'
 zinit snippet OMZP::command-not-found
 
 # 7. Completions Initialization with Caching
@@ -94,10 +87,18 @@ bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 
 alias c='clear'
+alias devon='load_dev_env'
+
+# Battery saver
+alias bson='echo 1 | sudo tee /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode'   # Battery Save ON
+alias bsoff='echo 0 | sudo tee /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode'  # Battery Save OFF
+alias bsstat='cat /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode'               # Battery Save STATUS
 
 # 9. Shell Integrations
-eval "$(fzf --zsh)"
-eval "$(zoxide init --cmd cd zsh)"
+[[ $- == *i* ]] && {
+  eval "$(fzf --zsh)"
+  eval "$(zoxide init --cmd cd zsh)"
+}
 
 # ====================================================
 # End of ~/.zshrc
@@ -105,3 +106,6 @@ eval "$(zoxide init --cmd cd zsh)"
 
 # Created by `pipx` on 2025-02-15 14:47:57
 export PATH="$PATH:/home/stark/.local/bin"
+
+
+
