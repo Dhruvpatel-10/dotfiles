@@ -1,0 +1,12 @@
+#!/bin/bash
+
+PORT=8443  # Local only
+DIR="."  # Current dir
+
+# Run Miniserve with upload + delete on localhost only
+miniserve -v \
+  --port ${PORT} \
+  -u \
+  -z \
+  --interfaces 127.0.0.1 \
+  ${DIR}

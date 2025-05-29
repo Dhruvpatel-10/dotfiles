@@ -18,3 +18,19 @@ mpv
 brave-browser
 
 zsh startship
+
+python pyenv
+
+cargo
+
+vscode npm
+
+syncthing
+
+miniserve
+
+obsidian
+
+qbit-torrent
+
+tailscale
