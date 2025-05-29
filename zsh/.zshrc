@@ -21,7 +21,7 @@ if command -v starship &>/dev/null; then
     eval "$(starship init zsh)"
 fi
 
-load_dev_env() {
+devon() {
   export PYENV_ROOT="$HOME/.pyenv"
   export PATH="$PYENV_ROOT/bin:$PATH"
   eval "$(pyenv init --path)"
@@ -66,6 +66,7 @@ zinit snippet OMZP::docker
 zinit snippet OMZP::conda
 zinit snippet OMZP::sudo
 zinit snippet OMZP::command-not-found
+zinit snippet OMZP::tailscale
 
 # 7. Completions Initialization with Caching
 autoload -Uz compinit
@@ -87,8 +88,8 @@ bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
 
 alias c='clear'
-alias devon='load_dev_env'
-
+alias myipv4='curl ipv4.icanhazip.com'
+alias myipv6='curl ipv6.icanhazip.com'
 # Battery saver
 alias bson='echo 1 | sudo tee /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode'   # Battery Save ON
 alias bsoff='echo 0 | sudo tee /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode'  # Battery Save OFF
@@ -106,6 +107,5 @@ alias bsstat='cat /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation
 
 # Created by `pipx` on 2025-02-15 14:47:57
 export PATH="$PATH:/home/stark/.local/bin"
-
-
+export PATH="$HOME/.local/bin:$PATH"
 

@@ -12,3 +12,9 @@ sudo dnf install mesa-va-drivers mesa-vdpau-drivers libva libva-utils vdpauinfo
 nerd fond jetbrain
 
 remove kde mail and other things
+
+mpv
+
+brave-browser
+
+zsh startship
