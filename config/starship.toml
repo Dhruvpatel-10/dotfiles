@@ -1,0 +1,124 @@
+# ~/.config/starship.toml - Optimized for speed and clarity
+format = """
+$directory$git_branch$git_status
+$character"""
+
+right_format = "$cmd_duration $nodejs$python$rust$conda"
+
+# Performance settings
+scan_timeout = 10
+command_timeout = 1000
+add_newline = true
+
+# Directory - simplified and faster
+[directory]
+style = "bold blue"
+read_only = " 󰌾"
+truncation_length = 4
+truncation_symbol = "…/"
+truncate_to_repo = true
+format = "[$path]($style)[$read_only]($read_only_style) "
+home_symbol = "~"
+
+# Git branch - faster detection
+[git_branch]
+symbol = ""
+style = "bold green"
+format = "[$symbol$branch]($style)"
+truncation_length = 20
+only_attached = false
+
+# Git status - minimal for speed
+[git_status]
+style = "bold red"
+format = '[$all_status$ahead_behind]($style)'
+ahead = "⇡${count}"
+behind = "⇣${count}"
+diverged = "⇡${ahead_count}⇣${behind_count}"
+untracked = "?${count}"
+modified = "!${count}"
+staged = "+${count}"
+deleted = "✘${count}"
+conflicted = "=${count}"
+renamed = "»${count}"
+
+# Prompt character
+[character]
+success_symbol = "[❯](bold green)"
+error_symbol = "[❯](bold red)"
+vimcmd_symbol = "[❮](bold yellow)"
+
+# Command duration - only show if >2s
+[cmd_duration]
+min_time = 2000
+format = "[$duration]($style)"
+style = "yellow"
+show_milliseconds = false
+
+# Language detection - optimized patterns
+[nodejs]
+format = "[$symbol$version]($style) "
+symbol = "󰎙"
+style = "green"
+detect_files = ["package.json", ".nvmrc"]
+detect_folders = ["node_modules"]
+detect_extensions = []
+
+[python]
+format = "[$symbol$version]($style) "
+symbol = "󰌠"
+style = "yellow"
+detect_files = ["requirements.txt", "pyproject.toml", ".python-version", "Pipfile"]
+detect_folders = [".venv", "venv", "__pycache__"]
+detect_extensions = ["py"]
+
+[rust]
+format = "[$symbol$version]($style) "
+symbol = "󱘗"
+style = "red"
+detect_files = ["Cargo.toml", "Cargo.lock"]
+detect_folders = ["target"]
+detect_extensions = ["rs"]
+
+[conda]
+format = "[$symbol$environment]($style) "
+symbol = "🅒"
+style = "green"
+ignore_base = true
+
+# Username - only show for SSH or root
+[username]
+style_user = "bold cyan"
+style_root = "bold red"
+format = "[$user]($style)@"
+disabled = false
+show_always = false
+
+# Hostname - only for SSH
+[hostname]
+ssh_only = true
+format = "[$hostname]($style) "
+style = "bold green"
+disabled = false
+
+# Disable slow/unnecessary modules
+[package]
+disabled = true
+
+[docker_context]
+disabled = true
+
+[kubernetes]
+disabled = true
+
+[terraform]
+disabled = true
+
+[aws]
+disabled = true
+
+[gcloud]
+disabled = true
+
+[azure]
+disabled = true

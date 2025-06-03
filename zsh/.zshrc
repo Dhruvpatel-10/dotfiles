@@ -1,111 +1,154 @@
 #!/usr/bin/env zsh
 # ====================================================
-# Optimized ~/.zshrc
+# Optimized ~/.zshrc - Performance & Usability Focus
 # ====================================================
 
-# 1. Exit early if not running interactively.
+# 1. Exit early if not interactive
 [[ $- != *i* ]] && return
 
-# 2. SSH Agent Setup
-# SSH Agent Setup
+# 2. Performance optimizations
+# Disable unnecessary zsh features that slow things down
+setopt NO_GLOBAL_RCS
+setopt NO_AUTO_CD
+setopt NO_BEEP
+
+# 3. History settings (moved early for better performance)
+HISTSIZE=10000
+HISTFILE=~/.zsh_history
+SAVEHIST=$HISTSIZE
+setopt APPEND_HISTORY
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_SPACE
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_SAVE_NO_DUPS
+setopt HIST_IGNORE_DUPS
+setopt HIST_FIND_NO_DUPS
+setopt HIST_REDUCE_BLANKS
+
+# 4. Essential keybindings (fix deletion issues)
+# Enable emacs-style keybindings
+bindkey -e
+# Fix backspace and delete keys
+bindkey "^?" backward-delete-char
+bindkey "^[[3~" delete-char
+bindkey "^[[H" beginning-of-line
+bindkey "^[[F" end-of-line
+bindkey "^[[1;5C" forward-word
+bindkey "^[[1;5D" backward-word
+# History search
+bindkey '^p' history-search-backward
+bindkey '^n' history-search-forward
+bindkey '^r' history-incremental-search-backward
+
+# 5. SSH Agent Setup (optimized)
 if [[ -z "$SSH_AUTH_SOCK" || ! -S "$SSH_AUTH_SOCK" ]]; then
-    export SSH_AUTH_SOCK="$HOME/.ssh-agent.sock"
-    if ! pgrep -u "$USER" ssh-agent > /dev/null; then
-        eval "$(ssh-agent -a $SSH_AUTH_SOCK)" >/dev/null
-        ssh-add ~/.ssh/id_ed25519 >/dev/null 2>&1
+    SSH_AGENT_FILE="$HOME/.ssh-agent-info"
+    if [[ -f "$SSH_AGENT_FILE" ]]; then
+        source "$SSH_AGENT_FILE" > /dev/null
+    fi
+    if ! pgrep -u "$USER" ssh-agent > /dev/null 2>&1; then
+        ssh-agent > "$SSH_AGENT_FILE"
+        source "$SSH_AGENT_FILE" > /dev/null
+        ssh-add ~/.ssh/id_ed25519 2>/dev/null
     fi
 fi
 
-# 3. Starship Prompt Initialization
-if command -v starship &>/dev/null; then
+# 6. Devon function (lazy loading for better startup time)
+devon() {
+    if [[ -z "$DEVON_LOADED" ]]; then
+        export PYENV_ROOT="$HOME/.pyenv"
+        [[ -d "$PYENV_ROOT/bin" ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+        command -v pyenv >/dev/null && eval "$(pyenv init --path)"
+
+        export NVM_DIR="$HOME/.nvm"
+        [[ -s "$NVM_DIR/nvm.sh" ]] && source "$NVM_DIR/nvm.sh"
+        [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
+
+        export DEVON_LOADED=1
+        echo "Development environment loaded."
+    fi
+}
+
+# 7. Zinit setup (optimized loading)
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+if [[ ! -d "$ZINIT_HOME" ]]; then
+    mkdir -p "$(dirname $ZINIT_HOME)"
+    git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+fi
+source "${ZINIT_HOME}/zinit.zsh"
+
+# 8. Essential plugins only (reduced for performance)
+# Syntax highlighting - load early
+zinit ice wait"0a" lucid
+zinit load zsh-users/zsh-syntax-highlighting
+
+# Autosuggestions
+zinit ice wait"0b" lucid atload"_zsh_autosuggest_start"
+zinit load zsh-users/zsh-autosuggestions
+
+# Completions
+zinit ice wait"0c" lucid blockf
+zinit load zsh-users/zsh-completions
+
+# FZF tab completion
+zinit ice wait"1" lucid
+zinit load Aloxaf/fzf-tab
+
+# Selected OMZ plugins (only the most useful ones)
+zinit ice wait"2" lucid
+zinit snippet OMZP::git
+zinit snippet OMZP::sudo
+zinit snippet OMZP::command-not-found
+
+# 9. Completions setup (cached)
+autoload -Uz compinit
+# Check if .zcompdump is older than 24 hours
+if [[ -n ~/.zcompdump(#qN.mh+24) ]]; then
+    compinit
+else
+    compinit -C
+fi
+
+# 10. Completion styling
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
+zstyle ':completion:*' menu select
+zstyle ':completion:*' use-cache on
+zstyle ':completion:*' cache-path ~/.zsh/cache
+zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color=always $realpath'
+
+# 11. Aliases (essential ones only)
+alias c='clear'
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+alias myipv4='curl -s ipv4.icanhazip.com'
+alias myipv6='curl -s ipv6.icanhazip.com'
+
+# Battery management aliases
+alias bson='echo 1 | sudo tee /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode'
+alias bsoff='echo 0 | sudo tee /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode'
+alias bsstat='cat /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode'
+
+# 12. Shell integrations (lazy loaded)
+# FZF integration
+if command -v fzf &> /dev/null; then
+    eval "$(fzf --zsh)"
+fi
+
+# Zoxide integration
+if command -v zoxide &> /dev/null; then
+    eval "$(zoxide init --cmd cd zsh)"
+fi
+
+# 13. Starship prompt (load last)
+if command -v starship &> /dev/null; then
     eval "$(starship init zsh)"
 fi
 
-devon() {
-  export PYENV_ROOT="$HOME/.pyenv"
-  export PATH="$PYENV_ROOT/bin:$PATH"
-  eval "$(pyenv init --path)"
-
-  export NVM_DIR="$HOME/.nvm"
-  [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-  [[ -s "$NVM_DIR/bash_completion" ]] && source "$NVM_DIR/bash_completion"
-}
-
-# 5. History Settings
-HISTSIZE=5000
-HISTFILE=~/.zsh_history
-SAVEHIST=$HISTSIZE
-HISTDUP=erase
-setopt appendhistory sharehistory hist_ignore_space hist_ignore_all_dups hist_save_no_dups hist_ignore_dups hist_find_no_dups
-
-# 6. Zinit Setup & Plugin Loading
-# --------------------------------
-if [[ ! -f "$HOME/.zinit/bin/zinit.zsh" ]]; then
-    mkdir -p "$HOME/.zinit/bin"
-    git clone https://github.com/zdharma-continuum/zinit.git "$HOME/.zinit/bin"
-fi
-source "$HOME/.zinit/bin/zinit.zsh"
-ZINIT_HOME="$HOME/.zinit/plugins"
-# Core plugins early
-zinit ice silent wait'0'
-zinit light zsh-users/zsh-autosuggestions
-zinit light zsh-users/zsh-syntax-highlighting
-
-# Other plugins after prompt shows
-zinit ice silent wait'1'
-zinit light zsh-users/zsh-completions
-zinit light Aloxaf/fzf-tab
-
-# Snippets deferred
-zinit ice silent wait'2'
-zinit snippet OMZP::git
-zinit snippet OMZP::npm
-zinit snippet OMZP::nvm
-zinit snippet OMZP::python
-zinit snippet OMZP::docker
-zinit snippet OMZP::conda
-zinit snippet OMZP::sudo
-zinit snippet OMZP::command-not-found
-zinit snippet OMZP::tailscale
-
-# 7. Completions Initialization with Caching
-autoload -Uz compinit
-if [ -f ~/.zcompdump ]; then
-    compinit -C -d ~/.zcompdump
-else
-    compinit
-fi
-zinit cdreplay -q
-
-# 8. Completion Styling, Keybindings & Aliases
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
-zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-zstyle ':completion:*' menu no
-zstyle ':fzf-tab:complete:cd:*' fzf-preview 'ls --color $realpath'
-zstyle ':fzf-tab:complete:__zoxide_z:*' fzf-preview 'ls --color $realpath'
-
-bindkey '^p' history-search-backward
-bindkey '^n' history-search-forward
-
-alias c='clear'
-alias myipv4='curl ipv4.icanhazip.com'
-alias myipv6='curl ipv6.icanhazip.com'
-# Battery saver
-alias bson='echo 1 | sudo tee /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode'   # Battery Save ON
-alias bsoff='echo 0 | sudo tee /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode'  # Battery Save OFF
-alias bsstat='cat /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode'               # Battery Save STATUS
-
-# 9. Shell Integrations
-[[ $- == *i* ]] && {
-  eval "$(fzf --zsh)"
-  eval "$(zoxide init --cmd cd zsh)"
-}
-
-# ====================================================
-# End of ~/.zshrc
-# ====================================================
-
-# Created by `pipx` on 2025-02-15 14:47:57
-export PATH="$PATH:/home/stark/.local/bin"
+# 14. PATH additions
 export PATH="$HOME/.local/bin:$PATH"
 
+# ====================================================
+# End of optimized ~/.zshrc
+# ====================================================
