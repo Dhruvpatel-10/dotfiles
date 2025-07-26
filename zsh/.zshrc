@@ -30,11 +30,12 @@ setopt HIST_REDUCE_BLANKS
 bindkey -e
 # Fix backspace and delete keys
 bindkey "^?" backward-delete-char
+bindkey "^H" backward-delete-char
 bindkey "^[[3~" delete-char
 bindkey "^[[H" beginning-of-line
 bindkey "^[[F" end-of-line
-bindkey "^[[1;5C" forward-word
-bindkey "^[[1;5D" backward-word
+bindkey "^[f" forward-word
+bindkey "^[b" backward-word
 # History search
 bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
