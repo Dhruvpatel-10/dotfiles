@@ -36,9 +36,6 @@ mv ~/.config/mpv ~/dotfiles_backup/
 cd ~
 stow -v -d ~/.dotfiles -t ~ zsh
 stow -v -d ~/.dotfiles -t ~ config
-stow -v -d ~/.dotfiles -t ~ gitconfig
-stow -v -d ~/.dotfiles -t ~ conda
-stow -v -d ~/.dotfiles -t ~ config
 ```
 
 ## Directory Structure
