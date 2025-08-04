@@ -1,8 +1,0 @@
-[user]
-	name = Dhruv
-	email = dp397113@gmail.com
-	signingkey = 46D47FAC9DEACA9A
-[gpg]
-	program = /usr/bin/gpg
-[commit]
-	gpgsign = true

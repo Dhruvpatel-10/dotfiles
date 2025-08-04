@@ -132,10 +132,21 @@ alias bsoff='echo 0 | sudo tee /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00
 alias bsstat='cat /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode'
 
 # 12. Shell integrations (lazy loaded)
+
 # FZF integration
 if command -v fzf &> /dev/null; then
-    eval "$(fzf --zsh)"
+    [[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
 fi
+
+# fnm
+FNM_PATH="/home/stark/.local/share/fnm"
+if [ -d "$FNM_PATH" ]; then
+  export PATH="$FNM_PATH:$PATH"
+  eval "`fnm env`"
+fi
+
+export PATH="$HOME/.fnm:$PATH"
+eval "$(fnm env)"
 
 # Zoxide integration
 if command -v zoxide &> /dev/null; then
@@ -149,6 +160,19 @@ fi
 
 # 14. PATH additions
 export PATH="$HOME/.local/bin:$PATH"
+
+# ---- tmux Shortcuts ----
+
+alias tn='tmux new -s'
+alias ta='tmux attach -t'
+alias tls='tmux ls'
+alias tk='tmux kill-session -t'
+alias tkall='tmux ls | cut -d: -f1 | xargs -n1 tmux kill-session -t'
+alias trc='tmux source-file ~/.tmux.conf && echo "Reloaded tmux config."'
+alias td='tmux detach'
+alias t='tmux attach || tmux new'
+alias tfresh='tkall && tmux new -s fresh'
+alias tmux-setup='echo -e "unbind C-b\nset-option -g prefix C-a\nbind C-a send-prefix" > ~/.tmux.conf && trc'
 
 # ====================================================
 # End of optimized ~/.zshrc
