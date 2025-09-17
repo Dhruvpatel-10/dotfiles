@@ -39,7 +39,6 @@ bindkey "^[b" backward-word
 # History search
 bindkey '^p' history-search-backward
 bindkey '^n' history-search-forward
-bindkey '^r' history-incremental-search-backward
 
 # 5. SSH Agent Setup (optimized)
 if [[ -z "$SSH_AUTH_SOCK" || ! -S "$SSH_AUTH_SOCK" ]]; then
@@ -134,9 +133,17 @@ alias bsstat='cat /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation
 # 12. Shell integrations (lazy loaded)
 
 # FZF integration
-if command -v fzf &> /dev/null; then
-    [[ -f ~/.fzf.zsh ]] && source ~/.fzf.zsh
-fi
+__fzf_history__() {
+  local output
+  output=$(fc -rl 1 | fzf --height=50% --reverse --query="$LBUFFER" --tac)
+  if [[ -n "$output" ]]; then
+    BUFFER=${output#*[0-9]*[[:space:]]}
+    CURSOR=$#BUFFER
+  fi
+  zle reset-prompt
+}
+zle -N __fzf_history__
+bindkey '^r' __fzf_history__
 
 # fnm
 FNM_PATH="/home/stark/.local/share/fnm"
@@ -160,6 +167,8 @@ fi
 
 # 14. PATH additions
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="$PATH:/usr/local/go/bin"
+export PATH="$PATH:$HOME/go/bin"
 
 # ---- tmux Shortcuts ----
 
@@ -177,3 +186,8 @@ alias tmux-setup='echo -e "unbind C-b\nset-option -g prefix C-a\nbind C-a send-p
 # ====================================================
 # End of optimized ~/.zshrc
 # ====================================================
+alias apt="apt-fast"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+soundpath="/mnt/c/Users/Stark/Documents/Sound Recordings/audio"
