@@ -34,3 +34,42 @@ obsidian
 qbit-torrent
 
 tailscale
+
+
+
+INSIDE UBUNTU DEVELOPMENT PACKAGES:
+sudo apt update && sudo apt install -y \
+    build-essential \
+    binutils \
+    cmake \
+    ninja-build \
+    pkg-config \
+    libtool \
+    autoconf \
+    automake \
+    meson \
+    gdb \
+    strace \
+    ltrace \
+    valgrind \
+    perf \
+    htop \
+    lsof \
+    zlib1g-dev \
+    libssl-dev \
+    libffi-dev \
+    libbz2-dev \
+    liblzma-dev \
+    libreadline-dev \
+    libsqlite3-dev \
+    uuid-dev \
+    libncurses-dev \
+    libxml2-dev \
+    libxslt1-dev \
+    libevent-dev \
+    tk-dev \
+    libgdbm-dev \
+    libgdbm-compat-dev \
+    wget \
+    curl
+
