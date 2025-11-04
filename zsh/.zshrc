@@ -130,48 +130,7 @@ alias bson='echo 1 | sudo tee /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/
 alias bsoff='echo 0 | sudo tee /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode'
 alias bsstat='cat /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode'
 
-# 12. Shell integrations (lazy loaded)
-
-# FZF integration
-__fzf_history__() {
-  local output
-  output=$(fc -rl 1 | fzf --height=50% --reverse --query="$LBUFFER" --tac)
-  if [[ -n "$output" ]]; then
-    BUFFER=${output#*[0-9]*[[:space:]]}
-    CURSOR=$#BUFFER
-  fi
-  zle reset-prompt
-}
-zle -N __fzf_history__
-bindkey '^r' __fzf_history__
-
-# fnm
-FNM_PATH="/home/stark/.local/share/fnm"
-if [ -d "$FNM_PATH" ]; then
-  export PATH="$FNM_PATH:$PATH"
-  eval "`fnm env`"
-fi
-
-export PATH="$HOME/.fnm:$PATH"
-eval "$(fnm env)"
-
-# Zoxide integration
-if command -v zoxide &> /dev/null; then
-    eval "$(zoxide init --cmd cd zsh)"
-fi
-
-# 13. Starship prompt (load last)
-if command -v starship &> /dev/null; then
-    eval "$(starship init zsh)"
-fi
-
-# 14. PATH additions
-export PATH="$HOME/.local/bin:$PATH"
-export PATH="$PATH:/usr/local/go/bin"
-export PATH="$PATH:$HOME/go/bin"
-
-# ---- tmux Shortcuts ----
-
+# tmux Shortcuts
 alias tn='tmux new -s'
 alias ta='tmux attach -t'
 alias tls='tmux ls'
@@ -183,11 +142,71 @@ alias t='tmux attach || tmux new'
 alias tfresh='tkall && tmux new -s fresh'
 alias tmux-setup='echo -e "unbind C-b\nset-option -g prefix C-a\nbind C-a send-prefix" > ~/.tmux.conf && trc'
 
+# Other aliases
+alias apt="apt-fast"
+
+# 12. Shell integrations (lazy loaded)
+
+# FZF integration - FIXED to show latest history first
+__fzf_history__() {
+  local output
+  # Changed: Removed --tac flag to show most recent first (fc -rl already shows reverse chronological)
+  output=$(fc -rl 1 | fzf --height=50% --reverse --query="$LBUFFER")
+  if [[ -n "$output" ]]; then
+    BUFFER=${output#*[0-9]*[[:space:]]}
+    CURSOR=$#BUFFER
+  fi
+  zle reset-prompt
+}
+zle -N __fzf_history__
+bindkey '^r' __fzf_history__
+
+# Load FZF if available
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
+# fnm
+FNM_PATH="/home/stark/.local/share/fnm"
+if [ -d "$FNM_PATH" ]; then
+  export PATH="$FNM_PATH:$PATH"
+  eval "`fnm env`"
+fi
+
+# Zoxide integration
+if command -v zoxide &> /dev/null; then
+    eval "$(zoxide init --cmd cd zsh)"
+fi
+
+# 13. Starship prompt (load last)
+if command -v starship &> /dev/null; then
+    eval "$(starship init zsh)"
+fi
+
+# 14. PATH management (centralized and efficient)
+# ====================================================
+# Function to add directories to PATH only if they exist and aren't already in PATH
+add_to_path() {
+    for dir in "$@"; do
+        # Expand ~ to home directory
+        dir="${dir/#\~/$HOME}"
+        # Check if directory exists and is not already in PATH
+        if [[ -d "$dir" && ":$PATH:" != *":$dir:"* ]]; then
+            export PATH="$dir:$PATH"
+        fi
+    done
+}
+
+# Add paths in priority order (highest priority first)
+add_to_path \
+    "$HOME/.local/bin" \
+    "$HOME/.cargo/bin" \
+    "$HOME/go/bin" \
+    "/usr/local/go/bin"
+
+# To add new paths in the future, just add them to the list above like this:
+# add_to_path "/opt/myapp/bin" "$HOME/custom/bin" "/another/path"
+# ====================================================
+
+
 # ====================================================
 # End of optimized ~/.zshrc
 # ====================================================
-alias apt="apt-fast"
-
-[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
-
-soundpath="/mnt/c/Users/Stark/Documents/Sound Recordings/audio"
