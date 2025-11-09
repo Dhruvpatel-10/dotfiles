@@ -49,7 +49,7 @@ if [[ -z "$SSH_AUTH_SOCK" || ! -S "$SSH_AUTH_SOCK" ]]; then
     if ! pgrep -u "$USER" ssh-agent > /dev/null 2>&1; then
         ssh-agent > "$SSH_AGENT_FILE"
         source "$SSH_AGENT_FILE" > /dev/null
-        ssh-add ~/.ssh/id_ed25519 2>/dev/null
+        ssh-add -q /home/stark/.ssh/keys/id_ed25519_personal /home/stark/.ssh/keys/leanscale 2>/dev/null
     fi
 fi
 
@@ -210,3 +210,12 @@ add_to_path \
 # ====================================================
 # End of optimized ~/.zshrc
 # ====================================================
+
+. "$HOME/.local/share/../bin/env"
+
+# fnm
+FNM_PATH="/home/stark/.local/share/fnm"
+if [ -d "$FNM_PATH" ]; then
+  export PATH="$FNM_PATH:$PATH"
+  eval "`fnm env`"
+fi
